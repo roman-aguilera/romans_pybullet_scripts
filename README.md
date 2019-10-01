@@ -1,4 +1,3 @@
 # pybullet scripts
-## this is wehere i keep my pybullet scripts for my experiments
 
-dgdfgdfg
+this is wehere i keep my pybullet scripts for my experiments
