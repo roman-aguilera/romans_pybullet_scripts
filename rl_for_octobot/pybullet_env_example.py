@@ -22,29 +22,44 @@ config["eager"] = False
 
 
 
-import pybullet_envs # envs are regiterend during import. envs are found in ~/anaconda3/envs/roman_playful/lib/python3.6/site-packages/pybullet_envs/__init__.py
-env = gym.make("CartPoleBulletEnv-v1")
+#import pybullet_envs 
+#envs are registered during import. 
+#envs are found in ~/anaconda3/envs/roman_playful/lib/python3.6/site-packages/pybullet_envs/__init__.py
+
 
 class MultiEnv(gym.Env):
     def __init__(self, env_config):
         # pick actual env based on worker and env indexes
-        self.env = env
 	#self.env = gym.make( choose_env_for (env_config.worker_index, env_config.vector_index))
+        import pybullet_envs
+        self.env = gym.make("CartPoleBulletEnv-v1", renders=False)
         self.action_space = self.env.action_space
         self.observation_space = self.env.observation_space
     def reset(self):
         return self.env.reset()
     def step(self, action):
         return self.env.step(action)
-'''
-class OctoEnv(e2.ReacherBulletEnv):
+	
+class ReacherEnv(gym.Env):
     def __init__(self, env_config):
-        pass	
-'''	
+        # pick actual env based on worker and env indexes
+        #self.env = gym.make( choose_env_for (env_config.worker_index, env_config.vector_index))
+        import pybullet_envs
+        self.env = gym.make("ReacherBulletEnv-v0", render=False)
+        self.action_space = self.env.action_space
+        self.observation_space = self.env.observation_space
+    def reset(self):
+        return self.env.reset()
+    def step(self, action):
+        return self.env.step(action)
 
 
 register_env("cartpolebulletenv", lambda config: MultiEnv(config))
-trainer = ppo.PPOTrainer(config=config, env="cartpolebulletenv")
+register_env("reacherbulletenv", lambda config: ReacherEnv(config))
+
+
+#trainer = ppo.PPOTrainer(config=config, env="cartpolebulletenv")
+trainer = ppo.PPOTrainer(config=config, env="reacherbulletenv")
 
 #register_env("octoenv", lambda config: OctoEnv(config))
 #trainer = ppo.PPOTrainer(config=config, env="octoenv")

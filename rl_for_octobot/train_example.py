@@ -1,6 +1,7 @@
-
+import gym
 
 #got this from # https://usermanual.wiki/Document/pybullet20quickstart20guide.479068914/help
+# 
 import pybullet_envs.bullet.minitaur_gym_env as e
 env = e.MinitaurBulletEnv(render=True)
 

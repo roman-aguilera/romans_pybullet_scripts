@@ -38,15 +38,41 @@ Example Usage via executable:
 
 
 ############
-import pybullet_envs # envs are regiterend during import. envs are found in ~/anaconda3/envs/roman_playful/lib/python3.6/site-packages/pybullet_envs/__init__.py
-#env = gym.make("CartPoleBulletEnv-v1", renders=True)
+#import pybullet_envs 
+#primary environments used
+#envs are registered during import 
+#registered envs for this module are found in 
+# ~/anaconda3/envs/roman_playful/lib/python3.6/site-packages/pybullet_envs/__init__.py
+
+#import pybulletgym 
+# secondary environments (they work when using base conda env but not when using roman_playful conda env) 
+#envs are registered during import
+#these are the original pybullet gym envs by erwin coumans
+#registered envs for this module are found in
+# ~/Documents/RoboLab/roman_playful/pybullet-gym/pybulletgym/envs
+
 
 class MultiEnv(gym.Env):
     def __init__(self, env_config):
         # pick actual env based on worker and env indexes
+        #self.env = gym.make( choose_env_for (env_config.worker_index, env_config.vector_index)) 
         import pybullet_envs
         self.env = gym.make("CartPoleBulletEnv-v1", renders=True)
         #self.env = gym.make( choose_env_for (env_config.worker_index, env_config.vector_index))
+        self.action_space = self.env.action_space
+        self.observation_space = self.env.observation_space
+    def reset(self):
+        return self.env.reset()
+    def step(self, action):
+        return self.env.step(action)
+
+
+class ReacherEnv(gym.Env):
+    def __init__(self, env_config):
+        # pick actual env based on worker and env indexes
+        #self.env = gym.make( choose_env_for (env_config.worker_index, env_config.vector_index))
+        import pybullet_envs
+        self.env = gym.make("ReacherBulletEnv-v0", render=True)
         self.action_space = self.env.action_space
         self.observation_space = self.env.observation_space
     def reset(self):
@@ -57,6 +83,7 @@ class MultiEnv(gym.Env):
 
 from ray.tune.registry import register_env
 register_env("cartpolebulletenv", lambda config: MultiEnv(config))
+register_env("reacherbulletenv", lambda config: ReacherEnv(config))
 
 #register_env("octoenv", lambda config: OctoEnv(config))
 #trainer = ppo.PPOTrainer(config=config, env="octoenv")
