@@ -80,10 +80,75 @@ class ReacherEnv(gym.Env):
     def step(self, action):
         return self.env.step(action)
  
+class PusherEnv(gym.Env):
+    def __init__(self, env_config):
+        import pybullet_envs
+        self.env = gym.make("PusherBulletEnv-v0", render=True) # check ~/anaconda3/envs/roman_playful/lib/python3.6/site-packages/pybullet_envs/gym_manipulator_envs.py
+        self.action_space = self.env.action_space
+        self.observation_space = self.env.observation_space
+    def reset(self):
+        return self.env.reset()
+    def step(self, action):
+        return self.env.step(action)
+
+class ThrowerEnv(gym.Env):
+    def __init__(self, env_config):
+        import pybullet_envs
+        self.env = gym.make("ThrowerBulletEnv-v0", render=True) # check ~/anaconda3/envs/roman_playful/lib/python3.6/site-packages/pybullet_envs/gym_manipulator_envs.py
+        self.action_space = self.env.action_space
+        self.observation_space = self.env.observation_space
+    def reset(self):
+        return self.env.reset()
+    def step(self, action):
+        return self.env.step(action)
+
+class StrikerEnv(gym.Env):
+    def __init__(self, env_config):
+        import pybullet_envs
+        self.env = gym.make("StrikerBulletEnv-v0", render=True) # check ~/anaconda3/envs/roman_playful/lib/python3.6/site-packages/pybullet_envs/gym_manipulator_envs.py
+        self.action_space = self.env.action_space
+        self.observation_space = self.env.observation_space
+    def reset(self):
+        return self.env.reset()
+    def step(self, action):
+        return self.env.step(action)
+
+class WalkerEnv(gym.Env):
+    def __init__(self, env_config):
+        import pybullet_envs
+        self.env = gym.make("Walker2DBulletEnv-v0", render=True)#~/anaconda3/envs/roman_playful/lib/python3.6/site-packages/pybullet_envs/gym_locomotion_envs.py
+        self.debug = True
+        self.action_space = self.env.action_space
+        self.observation_space = self.env.observation_space
+        self.dts_taken_so_far = 0 # used for debugging number of timesteps taken in one episode
+    def reset(self):
+        self.env.reset() #
+        for j in self.env.env.robot.ordered_joints:
+            j.reset_current_position(0.0,0.0) #reset joint state to desired position and velocity
+        #return self.env.reset()
+        self.env.step(self.env.action_space.sample()*0.0) #let robot fall without taking any action for 1 timestep, return usual env paratmeters
+        self.dts_taken_so_far = 1
+        return self.env.env.robot.calc_state() #return state of robot
+
+    def step(self, action):
+        input("Press Enter  .....")    
+        print("Colisions for feet:					       ", self.env.env.robot.calc_state()[20], "   ", self.env.env.robot.calc_state()[21]) #returns states, last 2 numbers inticate whther foot is in contact with ground
+        self.dts_taken_so_far += 1
+        if self.debug:
+            print("Time elapsed in episode: ", self.dts_taken_so_far * self.env.env.scene.dt)
+            print("Number of dt's taken in episode: " , self.dts_taken_so_far)
+        return self.env.step(action)
+
+
 
 from ray.tune.registry import register_env
 register_env("cartpolebulletenv", lambda config: MultiEnv(config))
 register_env("reacherbulletenv", lambda config: ReacherEnv(config))
+register_env("pusherbulletenv", lambda config: PusherEnv(config))
+register_env("throwerbulletenv", lambda config: ThrowerEnv(config))
+register_env("strikerbulletenv", lambda config: StrikerEnv(config))
+register_env("walkerbulletenv", lambda config: WalkerEnv(config))
+
 
 #register_env("octoenv", lambda config: OctoEnv(config))
 #trainer = ppo.PPOTrainer(config=config, env="octoenv")
@@ -385,6 +450,11 @@ def rollout(agent,
 
     steps = 0
     episodes = 0
+    ##################################################################### start Roman
+    MeshStates = #initialize Mesh
+    import cpvpy as cp # import function to calculate distance
+    from .state_distance_calculator.py import is_distance_threshold_exceeded # import function to calculate distance 
+    ##################################################################### end Roman
     while keep_going(steps, num_steps, episodes, num_episodes):
         mapping_cache = {}  # in case policy_agent_mapping is stochastic
         saver.begin_rollout()
@@ -396,6 +466,9 @@ def rollout(agent,
         prev_rewards = collections.defaultdict(lambda: 0.)
         done = False
         reward_total = 0.0
+	################################################################# start Roman
+        number_of_remaining_simulation_steps = 20 ########### amount of simulation steps we want to run until we log into our state trasition matrix [(1 dt)= (1 step in simulation) = (env.instance.emv.scene.dt=0.0165) = (env_instance.env.scene.frameskip = 4) * (env_instance.env.scene.timestep = 0.004125) ]
+        ################################################################# end Roman
         while not done and keep_going(steps, num_steps, episodes,
                                       num_episodes):
             multi_obs = obs if multiagent else {_DUMMY_AGENT_ID: obs}
@@ -426,6 +499,18 @@ def rollout(agent,
 
             action = action if multiagent else action[_DUMMY_AGENT_ID]
             next_obs, reward, done, info = env.step(action)
+            number_of_remaining_simulation_steps -= 1 
+            print("RLLibStates: ")
+            print("Observation: ", next_obs)
+            print("Observation type: ", type(next_obs))
+            print("Observation Shape: ", next_obs.shape)
+            if done: ############################ it is time to log into our mesh, my dudes 
+                if number_of_remaining_simulation_steps > 0: ##### if we failed
+                    #increment failure state (state 0, or whatever we call it)
+                    pass
+                else:                                        #### if the episode continued loger than our threshold of simulation steps
+                    #increment current state
+                    pass  
             if multiagent:
                 for agent_id, r in reward.items():
                     prev_rewards[agent_id] = r
