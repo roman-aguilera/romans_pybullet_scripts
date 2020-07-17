@@ -20,15 +20,15 @@ print(ET.SubElement)
 
 #args_for_subelement = {'parent':'root', 'tag':'link','attrib':'{'name': 'link_1'}'}
 
-number_of_links = 3
+number_of_links = 90 #3
 # information on link properties 
 # http://wiki.ros.org/urdf/XML/link
 for link_index in range(1, number_of_links+1):
 	link = ET.SubElement( root, 'link', {'name': 'link_' + str(link_index)}  )
 	
-	collision = ET.SubElement(link, 'collision', {'':''} )
+	collision = ET.SubElement(link, 'collision' ) #collision = ET.SubElement(link, 'collision' , {'': '' } )
 	
-	geometry = ET.SubElement( collision, 'geometry', {'': '' } )
+	geometry = ET.SubElement( collision, 'geometry' ) #geometry = ET.SubElement( collision, 'geometry', {'': '' } )
 	
 	cylinder = ET.SubElement( geometry, 'cylinder', {'length':'0.6', 'radius':'0.2'} )
 	
@@ -37,10 +37,11 @@ for link_index in range(1, number_of_links+1):
 # information on joint properties 
 # http://wiki.ros.org/urdf/XML/joint#Attributes	
 for joint_index in range(1, number_of_links + 1):
-	joint = ET.SubElement( root, 'joint'+ str(joint_index-1) + 'link'+ str(joint_index) , {'name':'link_'+ str(joint_index-1) + '_to_link_'+ str(joint_index) , 'type':'continuous'} )
+	joint = ET.SubElement( root, 'joint' , {'name':'link_'+ str(joint_index-1) + '_to_link_'+ str(joint_index) , 'type':'continuous'} ) 
+	#joint = ET.SubElement( root, 'joint'+ str(joint_index-1) + 'link'+ str(joint_index) , {'name':'link_'+ str(joint_index-1) + '_to_link_'+ str(joint_index) , 'type':'continuous'} )
 	
-	parent = ET.SubElement( joint , 'parent', {'link':'link_'+str(link_index-1)} )
-	child = ET.SubElement( joint , 'child', {'link':'link_'+str(link_index)} )
+	parent = ET.SubElement( joint , 'parent', {'link':'link_'+str(joint_index-1)} )
+	child = ET.SubElement( joint , 'child', {'link':'link_'+str(joint_index)} )
 	origin = ET.SubElement( joint , 'origin', {'xyz':'0 0 2'} )
 	axis = ET.SubElement( joint , 'xyz', {'xyz':'1 0 0'} )
 	

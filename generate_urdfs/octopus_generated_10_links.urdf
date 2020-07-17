@@ -1,0 +1,31 @@
+<robot name="plane">
+  <link name="link_0">
+  <contact>
+      <lateral_friction value="1" />
+  </contact>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+       <mass value=".0" />
+       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry>
+          <mesh filename="plane.obj" scale="1 1 1" />
+      </geometry>
+       <material name="white">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 -5" />
+      <geometry>
+                <box size="30 30 10" />
+      </geometry>
+    </collision>
+  </link>
+
+
+
+
+<link name="link_1"><collision><geometry><cylinder length="0.6" radius="0.2" /></geometry><origin xyz="0 0 1" /></collision></link><link name="link_2"><collision><geometry><cylinder length="0.6" radius="0.2" /></geometry><origin xyz="0 0 1" /></collision></link><link name="link_3"><collision><geometry><cylinder length="0.6" radius="0.2" /></geometry><origin xyz="0 0 1" /></collision></link><link name="link_4"><collision><geometry><cylinder length="0.6" radius="0.2" /></geometry><origin xyz="0 0 1" /></collision></link><link name="link_5"><collision><geometry><cylinder length="0.6" radius="0.2" /></geometry><origin xyz="0 0 1" /></collision></link><link name="link_6"><collision><geometry><cylinder length="0.6" radius="0.2" /></geometry><origin xyz="0 0 1" /></collision></link><link name="link_7"><collision><geometry><cylinder length="0.6" radius="0.2" /></geometry><origin xyz="0 0 1" /></collision></link><link name="link_8"><collision><geometry><cylinder length="0.6" radius="0.2" /></geometry><origin xyz="0 0 1" /></collision></link><link name="link_9"><collision><geometry><cylinder length="0.6" radius="0.2" /></geometry><origin xyz="0 0 1" /></collision></link><link name="link_10"><collision><geometry><cylinder length="0.6" radius="0.2" /></geometry><origin xyz="0 0 1" /></collision></link><joint name="link_0_to_link_1" type="continuous"><parent link="link_0" /><child link="link_1" /><origin xyz="0 0 2" /><xyz xyz="1 0 0" /></joint><joint name="link_1_to_link_2" type="continuous"><parent link="link_1" /><child link="link_2" /><origin xyz="0 0 2" /><xyz xyz="1 0 0" /></joint><joint name="link_2_to_link_3" type="continuous"><parent link="link_2" /><child link="link_3" /><origin xyz="0 0 2" /><xyz xyz="1 0 0" /></joint><joint name="link_3_to_link_4" type="continuous"><parent link="link_3" /><child link="link_4" /><origin xyz="0 0 2" /><xyz xyz="1 0 0" /></joint><joint name="link_4_to_link_5" type="continuous"><parent link="link_4" /><child link="link_5" /><origin xyz="0 0 2" /><xyz xyz="1 0 0" /></joint><joint name="link_5_to_link_6" type="continuous"><parent link="link_5" /><child link="link_6" /><origin xyz="0 0 2" /><xyz xyz="1 0 0" /></joint><joint name="link_6_to_link_7" type="continuous"><parent link="link_6" /><child link="link_7" /><origin xyz="0 0 2" /><xyz xyz="1 0 0" /></joint><joint name="link_7_to_link_8" type="continuous"><parent link="link_7" /><child link="link_8" /><origin xyz="0 0 2" /><xyz xyz="1 0 0" /></joint><joint name="link_8_to_link_9" type="continuous"><parent link="link_8" /><child link="link_9" /><origin xyz="0 0 2" /><xyz xyz="1 0 0" /></joint><joint name="link_9_to_link_10" type="continuous"><parent link="link_9" /><child link="link_10" /><origin xyz="0 0 2" /><xyz xyz="1 0 0" /></joint></robot>
